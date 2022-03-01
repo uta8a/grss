@@ -59,7 +59,7 @@
 - title: "GitHub Changelog"
   url: "https://github.blog/changelog/feed/"
 - title: "Cryptology ePrint Archive"
-  url: "https://eprint.iacr.org/rss/rss.xml"
+  url: "https://eprint.iacr.org/rss/atom.xml"
 - title: "Microsoft Security Blog"
   url: "https://www.microsoft.com/security/blog/feed/"
 - title: "Microsoft Research"
