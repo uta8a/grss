@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: "0 12 * * *"
+    - cron: "25 12 * * *"
 jobs:
   fetch:
     runs-on: ubuntu-latest
