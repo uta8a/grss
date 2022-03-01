@@ -10,6 +10,7 @@ jobs:
         with:
           node-version: "16"
           cache: npm
+      - run: npm install
       - run: npm run out
       - run: node dist/main.cjs
       - name: IACRの取得番号をpush
