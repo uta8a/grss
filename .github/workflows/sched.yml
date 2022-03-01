@@ -1,0 +1,23 @@
+on:
+  schedule:
+    - cron: "0 12 * * *"
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: npm
+      - run: npm run out
+      - run: node dist/main.cjs
+      - name: IACRの取得番号をpush
+        run: |
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "iacr num update"; \
+            git push origin HEAD:${GITHUB_REF}; \
+          fi
