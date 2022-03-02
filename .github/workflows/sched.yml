@@ -16,12 +16,11 @@ jobs:
         with:
           node-version: "16"
           cache: npm
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
       - run: npm install
       - run: npm run out
       - run: node dist/main.cjs
-        with:
-          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
       - name: IACRの取得番号をpush
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
