@@ -3,6 +3,9 @@ import { DateTime } from "luxon";
 import { Grss } from "@/types/grss";
 import fetch from "node-fetch";
 import * as fs from "fs";
+import { TextDecoder } from "text-encoding";
+import { fileURLToPath } from "url";
+import { Hash } from "crypto";
 type CustomFeed = {};
 type CustomItem = { updated: number };
 
@@ -24,8 +27,20 @@ const getRss = async (url): Promise<Grss> => {
   // workaround, iacr atom feed is broken
   if (url === "https://eprint.iacr.org/rss/atom.xml") {
     const req = await fetch(url);
-    let body = await req.text();
-    body = body.replaceAll(/^.*category term.*$/gm, "");
+    // console.log(req);
+    let rawbody = await req.arrayBuffer();
+    const dec = new TextDecoder();
+    let strbody = dec.decode(rawbody);
+    // console.log(strbody);
+    const body = strbody
+      .replaceAll(/<content[\s\S]*?<\/content.*?>/gm, "<content></content>")
+      .replaceAll(
+        /<description[\s\S]*?<\/description.*?>/gm,
+        "<description></description>"
+      )
+      .replaceAll(/^.*category term.*$/gm, "") // workaround for IACR eprint
+      .replaceAll(/[^\x00-\x7f]/gm, "") // workaround for unicode invalid
+      .replaceAll(/[^\x00-\x7f]/gm, ""); // workaround for unicode invalid
     const feeds = await parser.parseString(body);
     const [prev_year, prev_num] = await getNum(); // get previous iacr num
     let now_year = prev_year;
@@ -54,7 +69,21 @@ const getRss = async (url): Promise<Grss> => {
     fs.writeFileSync(`${process.cwd()}/.enviacr`, `${now_year}/${now_num}`);
     return rss;
   }
-  const feeds = await parser.parseURL(url);
+
+  const req = await fetch(url);
+  let rawbody = await req.arrayBuffer();
+  const dec = new TextDecoder();
+  let strbody = dec.decode(rawbody);
+  const body = strbody
+    .replaceAll(/<content[\s\S]*?<\/content.*?>/gm, "<content></content>")
+    .replaceAll(
+      /<description[\s\S]*?<\/description.*?>/gm,
+      "<description></description>"
+    )
+    .replaceAll(/^.*category term.*$/gm, "") // workaround for IACR eprint
+    .replaceAll(/[^\x00-\x7f]/gm, "") // workaround for unicode invalid
+    .replaceAll(/[^\x00-\x7f]/gm, ""); // workaround for unicode invalid
+  const feeds = await parser.parseString(body);
   return feeds.items
     .filter((feed) => {
       const date = feed.pubDate;

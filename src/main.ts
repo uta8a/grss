@@ -6,10 +6,12 @@ const main = async () => {
   const list = loadYaml();
   list.map(async (element) => {
     const grss = await getRss(element.url);
-    grss.map((rss) => {
-      writeRss(rss);
+    grss.map(async (rss) => {
+      await writeRss(rss);
     });
   });
 };
 
-main();
+main().catch((e) => {
+  console.log("main Error: ", e);
+});

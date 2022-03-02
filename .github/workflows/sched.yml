@@ -1,6 +1,12 @@
+# on:
+#   schedule:
+#     - cron: "0 12 * * *"
+
+## debug
 on:
-  schedule:
-    - cron: "25 12 * * *"
+  push:
+    branches:
+      - main
 jobs:
   fetch:
     runs-on: ubuntu-latest
