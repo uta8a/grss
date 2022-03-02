@@ -66,10 +66,12 @@
 - title: "Microsoft Research"
   url: "https://www.microsoft.com/en-us/research/feed/"
 - title: "bitwarden"
-  url: "https://bitwarden.com///blog/feed.xml"
-- title: "IACR News"
-  url: "https://iacr.org/news/rss/"
-- title: "A Few Thoughts on Cryptographic Engineering"
-  url: "https://blog.cryptographyengineering.com/feed/"
+  url: "https://bitwarden.com/blog/feed.xml"
+## duplicate eprint
+# - title: "IACR News"
+#   url: "https://iacr.org/news/rss/"
+## API limit? Network Error
+# - title: "A Few Thoughts on Cryptographic Engineering"
+#   url: "https://blog.cryptographyengineering.com/feed/"
 - title: "AWS Security"
   url: "https://aws.amazon.com/blogs/security/feed/"

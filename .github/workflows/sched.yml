@@ -1,12 +1,12 @@
-# on:
-#   schedule:
-#     - cron: "0 12 * * *"
+on:
+  schedule:
+    - cron: "0 12 * * *"
 
 ## debug
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 env:
   NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
   NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
@@ -21,7 +21,7 @@ jobs:
           cache: npm
       - run: npm install
       - run: npm run out
-      - run: node dist/main.cjs
+      - run: npm run dist
       - name: IACRの取得番号をpush
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}

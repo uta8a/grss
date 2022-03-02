@@ -82,27 +82,41 @@ const getRss = async (url): Promise<Grss> => {
     )
     .replaceAll(/^.*category term.*$/gm, "") // workaround for IACR eprint
     .replaceAll(/[^\x00-\x7f]/gm, "") // workaround for unicode invalid
-    .replaceAll(/[^\x00-\x7f]/gm, ""); // workaround for unicode invalid
-  const feeds = await parser.parseString(body);
-  return feeds.items
-    .filter((feed) => {
-      const date = feed.pubDate;
-      if (date === undefined) {
-        throw new Error(`Date is not specified: ${url}`);
-      }
-      if (feed.title === undefined) {
-        throw new Error(`title is not specified: ${feed.title}, ${url}`);
-      }
-      if (feed.link === undefined) {
-        throw new Error(`link is not specified: ${feed.title}, ${url}`);
-      }
-      return (
-        DateTime.fromJSDate(new Date(date)) >
-        DateTime.local().plus({ days: -1 })
-      );
-    })
-    .map((feed) => {
-      return { title: feed.title, link: feed.link };
-    });
+    .replaceAll(/[^\x00-\x7f]/gm, "");
+  // .replaceAll(/[\n\r]/gm, "\\n")
+  // .replaceAll(/&/gm, "&amp;")
+  // .replaceAll(/-/gm, "&#45;"); // workaround for invalid character in entity
+  try {
+    const feeds = await parser.parseString(body);
+    return feeds.items
+      .filter((feed) => {
+        const date = feed.pubDate;
+        if (date === undefined) {
+          throw new Error(`Date is not specified: ${url}`);
+        }
+        if (feed.title === undefined) {
+          throw new Error(`title is not specified: ${feed.title}, ${url}`);
+        }
+        if (feed.link === undefined) {
+          throw new Error(`link is not specified: ${feed.title}, ${url}`);
+        }
+        return (
+          DateTime.fromJSDate(new Date(date)) >
+          DateTime.local().plus({ days: -1 })
+        );
+      })
+      .map((feed) => {
+        return {
+          title: feed.title.replaceAll(/[^\x00-\x7f]/gm, ""),
+          link: feed.link,
+        };
+      });
+  } catch (err) {
+    console.error(`ParseError: ${err}`);
+    // console.error(`ParseError body: ${body}`);
+    fs.writeFileSync("error.file.log", body);
+    console.error(`ParseError url: ${url}`);
+    throw new Error("ParseError");
+  }
 };
 export { getRss };

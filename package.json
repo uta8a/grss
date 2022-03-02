@@ -13,7 +13,8 @@
     "fmt": "prettier --ignore-unknown --write '{,!(node_modules)/**/}*'",
     "commitlint": "commitlint -x @commitlint/config-conventional",
     "ts-node": "node --loader ts-node/esm src/main.ts",
-    "out": "esbuild src/main.ts --bundle --platform=node --minify --format=cjs --outfile=dist/main.cjs"
+    "out": "esbuild src/main.ts --bundle --platform=node --minify --format=cjs --outfile=dist/main.cjs",
+    "dist": "node dist/main.cjs"
   },
   "dependencies": {
     "@notionhq/client": "^1.0.0",
